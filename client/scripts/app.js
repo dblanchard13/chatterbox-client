@@ -1,6 +1,6 @@
 // YOUR CODE HERE:
 
-
+var currentRoom;
 var app = {};
 
 app.server = 'https://api.parse.com/1/classes/chatterbox';
@@ -26,6 +26,7 @@ app.send = function(message){
   });
 };
 
+
 // whether take arguments
 app.fetch = function(message){
   $.ajax({
@@ -36,11 +37,15 @@ app.fetch = function(message){
     contentType: 'application/json',
     //timeout: 1000,
     success: function (data) {
+      app.clearMessages();
       console.log('Fetch from server successfully');
       console.log(data.results);
       var dataResult = data.results;
+
       for (var i = 0; i < data.results.length; i++) {
-        app.addMessage(data.results[i]);
+        if(data.results[i].roomname === currentRoom){
+          app.addMessage(data.results[i]);
+        }
       }
     },
     error: function (data) {
@@ -70,7 +75,6 @@ $(document).ready(function(){
     app.addFriend();
   });
 
-  $
 
   $('#send .submit').submit(function() {
     console.log("submit");
@@ -82,6 +86,20 @@ $(document).ready(function(){
   //   app.handleSubmit();
   // });
 
+  // submit refresh why?
+  $("#roomSubmit").click(function() {
+    var str = escape($('#roomName').val());
+    app.addRoom(str);
+
+    currentRoom = $('#roomName').val();
+
+    $('#roomName').val('');
+  });
+
+  $('#roomSelect').change(function() {
+    currentRoom = $('#roomSelect').val();
+  });
+
 });
 
 app.addFriend = function() {
@@ -89,10 +107,15 @@ app.addFriend = function() {
 
 app.handleSubmit = function() {
   var content, username, room;
-  content = $('#message').val(content);
+  content = $('#message').val();
 
+  var message = {
+    'username': 'DandE',
+    'text': 'bamo',
+    'roomname': 'cheese'
+  };
+  app.send(message);
 }
-
 
 
 

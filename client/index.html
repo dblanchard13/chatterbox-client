@@ -16,25 +16,26 @@
     <div id="main">
       <h1>chatterbox</h1>
       <div>
-        <select id="roomSelect">
-          <option>SupaLobby</option>
-        </select>
+        <select id="roomSelect"></select>
         <form>
            <!-- Make initial text in form light grey and clear out when user clicks into it -->
-          <input type="text" id="roomName">
-          <input type="submit" id="roomSubmit">
+          <input type="text" id="roomName" placeholder="Roomname">
         </form>
+        <button id="roomSubmit">add room</button>
       </div>
 
       <!-- Your HTML goes here! -->
-      <div id="chats">
-        <div class='username'></div>
+      <div class='username'></div>
         <form>
-          <input type="text" id="message">
+          <input type="text" id="message" placeholder="Message...">
           <input type="submit" id="send" class="submit">
         </form>
       </div>
+
+    <div id="chats">
+
     </div>
+
   </body>
 </html>
 
