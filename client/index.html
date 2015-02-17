@@ -15,6 +15,14 @@
   <body>
     <div id="main">
       <h1>chatterbox</h1>
+
+      <div>
+        <select id="userSelect"></select>
+        <form>
+          <input type="text" id="userName" placeholder="username">
+        </form>
+        <button id="userSubmit">add user</button>
+      </div>
       <div>
         <select id="roomSelect"></select>
         <form>
@@ -25,11 +33,12 @@
       </div>
 
       <!-- Your HTML goes here! -->
-      <div class='username'></div>
+      <div class='content'>
         <form>
           <input type="text" id="message" placeholder="Message...">
-          <input type="submit" id="send" class="submit">
+          <input type="submit" id="send" class="submit" placeholder="Message">
         </form>
+        <button id="enter">Enter</button>
       </div>
 
     <div id="chats">

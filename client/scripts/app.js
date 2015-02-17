@@ -1,7 +1,9 @@
 // YOUR CODE HERE:
 
-var currentRoom;
+var currentRoom, currentUser;
 var app = {};
+var friends = {};
+var currentClicking;
 
 app.server = 'https://api.parse.com/1/classes/chatterbox';
 
@@ -28,12 +30,12 @@ app.send = function(message){
 
 
 // whether take arguments
-app.fetch = function(message){
+app.fetch = function(){
   $.ajax({
     // always use this url
     url: 'https://api.parse.com/1/classes/chatterbox',
     type: 'GET',
-    data: JSON.stringify(message),
+    data: {order: '-createdAt'},
     contentType: 'application/json',
     //timeout: 1000,
     success: function (data) {
@@ -62,7 +64,7 @@ app.clearMessages = function() {
 //maybe need use send somewhere
 app.addMessage = function(message) {
   //this.send(message);
-  $('#chats').append("<div><h4 class='username'>" + message.username + "</h4><p>" + message.text + "</p></div>");
+  $('#chats').append("<div><h4 class='username'>" + message.username + "</h4><p>" + escape(message.text) + "</p></div>");
 }
 
 app.addRoom = function(roomName) {
@@ -70,16 +72,24 @@ app.addRoom = function(roomName) {
 }
 
 $(document).ready(function(){
-
+  //location.search
   $('#chats').delegate('.username', 'click', function(){
+    var text = $(this).contents().filter(function() {
+      return this.nodeType == 3;
+    }).text()
+    console.log('text - ' + text);
+    console.log(this);
+    currentClicking = $(this).text();
+    console.log(currentClicking)
     app.addFriend();
   });
 
 
-  $('#send .submit').submit(function() {
-    console.log("submit");
-    app.handleSubmit();
-  });
+  // $('#send .submit').submit(function(e) {
+  //   e.preventDefault();
+  //   console.log("submit");
+  //   app.handleSubmit();
+  // });
 
   // $('form').delegate('#send .submit', 'submit', function(){
   //   alert("Submitted");
@@ -90,9 +100,7 @@ $(document).ready(function(){
   $("#roomSubmit").click(function() {
     var str = escape($('#roomName').val());
     app.addRoom(str);
-
-    currentRoom = $('#roomName').val();
-
+    currentRoom = str;
     $('#roomName').val('');
   });
 
@@ -100,20 +108,43 @@ $(document).ready(function(){
     currentRoom = $('#roomSelect').val();
   });
 
+  $('#enter').click(function() {
+    app.handleSubmit();
+    app.fetch();
+  });
+
+  $('#userSubmit').click(function(){
+    var str = escape($('#userName').val());
+    $("#userSelect").append("<option>" + str + "</option>");
+    currentUser = str;
+    friends[str] = [];
+    $('#userName').val('');
+  })
+
+  if(currentRoom !== undefined) {
+    setInterval(app.fetch, 500);
+  }
+
 });
 
 app.addFriend = function() {
+  friends[currentUser].push(currentClicking);
 }
 
 app.handleSubmit = function() {
   var content, username, room;
-  content = $('#message').val();
+  content = escape($('#message').val());
+  room = currentRoom;
+  //user = currentUser;
 
   var message = {
-    'username': 'DandE',
-    'text': 'bamo',
-    'roomname': 'cheese'
+    'username': currentUser,
+    'text': content,
+    'roomname': room
   };
+
+  $('#message').val("");
+
   app.send(message);
 }
 
