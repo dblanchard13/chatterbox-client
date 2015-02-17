@@ -1,5 +1,6 @@
 // YOUR CODE HERE:
 
+
 var app = {};
 
 app.server = 'https://api.parse.com/1/classes/chatterbox';
@@ -33,12 +34,18 @@ app.fetch = function(message){
     type: 'GET',
     data: JSON.stringify(message),
     contentType: 'application/json',
+    //timeout: 1000,
     success: function (data) {
       console.log('Fetch from server successfully');
+      console.log(data.results);
+      var dataResult = data.results;
+      for (var i = 0; i < data.results.length; i++) {
+        app.addMessage(data.results[i]);
+      }
     },
     error: function (data) {
       // see: https://developer.mozilla.org/en-US/docs/Web/API/console.error
-      console.error('chatterbox: Failed to send message');
+      console.error('chatterbox: Failed to fetch message');
     }
   });
 };
@@ -50,9 +57,45 @@ app.clearMessages = function() {
 //maybe need use send somewhere
 app.addMessage = function(message) {
   //this.send(message);
-  $('#chats').append("<p>" + message.text + "</p>");
+  $('#chats').append("<div><h4 class='username'>" + message.username + "</h4><p>" + message.text + "</p></div>");
 }
 
 app.addRoom = function(roomName) {
-  $("#roomSelect").append("<p>" + roomName + "</p>");
+  $("#roomSelect").append("<option>" + roomName + "</option>");
 }
+
+$(document).ready(function(){
+
+  $('#chats').delegate('.username', 'click', function(){
+    app.addFriend();
+  });
+
+  $
+
+  $('#send .submit').submit(function() {
+    console.log("submit");
+    app.handleSubmit();
+  });
+
+  // $('form').delegate('#send .submit', 'submit', function(){
+  //   alert("Submitted");
+  //   app.handleSubmit();
+  // });
+
+});
+
+app.addFriend = function() {
+}
+
+app.handleSubmit = function() {
+  var content, username, room;
+  content = $('#message').val(content);
+
+}
+
+
+
+
+
+
+
