@@ -39,14 +39,15 @@ app.fetch = function(){
     contentType: 'application/json',
     //timeout: 1000,
     success: function (data) {
-      app.clearMessages();
-      console.log('Fetch from server successfully');
-      console.log(data.results);
-      var dataResult = data.results;
+      if (currentRoom) {
+        app.clearMessages();
+        console.log('Fetch from server successfully');
+        var dataResult = data.results;
 
-      for (var i = 0; i < data.results.length; i++) {
-        if(data.results[i].roomname === currentRoom){
-          app.addMessage(data.results[i]);
+        for (var i = 0; i < data.results.length; i++) {
+          if(data.results[i].roomname === currentRoom){
+            app.addMessage(data.results[i]);
+          }
         }
       }
     },
@@ -64,7 +65,11 @@ app.clearMessages = function() {
 //maybe need use send somewhere
 app.addMessage = function(message) {
   //this.send(message);
-  $('#chats').append("<div><h4 class='username'>" + message.username + "</h4><p>" + escape(message.text) + "</p></div>");
+  if (friends[currentUser][message.username]) {
+     $('#chats').append("<div><h4 class='username'>" + message.username + "</h4><p><b>" + escape(message.text) + "</b></p></div>");
+  } else {
+    $('#chats').append("<div><h4 class='username'>" + message.username + "</h4><p>" + escape(message.text) + "</p></div>");
+  }
 }
 
 app.addRoom = function(roomName) {
@@ -73,14 +78,12 @@ app.addRoom = function(roomName) {
 
 $(document).ready(function(){
   //location.search
+  currentUser = window.location.search.slice(10);
+  $("#userSelect").append("<option>" + currentUser + "</option>");
+  friends[currentUser] = {};
+
   $('#chats').delegate('.username', 'click', function(){
-    var text = $(this).contents().filter(function() {
-      return this.nodeType == 3;
-    }).text()
-    console.log('text - ' + text);
-    console.log(this);
     currentClicking = $(this).text();
-    console.log(currentClicking)
     app.addFriend();
   });
 
@@ -117,18 +120,16 @@ $(document).ready(function(){
     var str = escape($('#userName').val());
     $("#userSelect").append("<option>" + str + "</option>");
     currentUser = str;
-    friends[str] = [];
+    friends[str] = {};
     $('#userName').val('');
   })
 
-  if(currentRoom !== undefined) {
-    setInterval(app.fetch, 500);
-  }
-
+  setInterval(app.fetch, 500);
 });
 
 app.addFriend = function() {
-  friends[currentUser].push(currentClicking);
+  friends[currentUser][currentClicking] = true;
+  app.fetch();
 }
 
 app.handleSubmit = function() {

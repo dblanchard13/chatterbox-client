@@ -47,14 +47,14 @@ body {
 }
 
 form {
-    padding: 20px;
+    padding: 0px;
     padding-left: 0;
-    margin-bottom: 20px;
+    margin-bottom: 0px;
 }
 
 form input[type=text] {
-    margin-right: 10px;
-    width: 70%;
+    margin-right: 0px;
+    width: 50%;
     font-size: 12px;
     padding: 5px;
 }
